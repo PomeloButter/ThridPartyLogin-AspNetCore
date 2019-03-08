@@ -31,7 +31,7 @@ namespace ThridPartyLogin_AspNetCore
             {
                 services.Configure(action);
             }
-            services.TryAddTransient<ILogin, QQLogin>();
+            services.TryAddTransient<ILogin, QqLogin>();
             return services;
         }
     }

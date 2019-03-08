@@ -12,11 +12,14 @@ namespace ThridPartyLogin_AspNetCore
         public JObject Result { get; set; }
 
         public string Token { get; set; }
-
-        protected JObject Deserialize(string objStr)
-        {
-            return JsonConvert.DeserializeObject<JObject>(objStr);
-        }
+     
     }
 
+    public enum Code
+    {
+        Success,
+        Exception,
+        UserInfoErrorMsg,
+        AccesstokenErrorMsg
+    }
 }
