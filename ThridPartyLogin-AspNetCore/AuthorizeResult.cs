@@ -5,7 +5,7 @@ namespace ThridPartyLogin_AspNetCore
 {
     public class AuthorizeResult
     {
-        public int Code { get; set; }
+        public Code Code { get; set; }
 
         public string Error { get; set; }
 

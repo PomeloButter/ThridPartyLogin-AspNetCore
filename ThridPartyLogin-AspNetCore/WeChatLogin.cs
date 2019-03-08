@@ -44,21 +44,21 @@ namespace ThridPartyLogin_AspNetCore
 
                     var token = GetAccessToken(code, ref errorMsg);
 
-                    if (!string.IsNullOrEmpty(errorMsg)) return new AuthorizeResult() {Code = 2, Error = errorMsg};
+                    if (!string.IsNullOrEmpty(errorMsg)) return new AuthorizeResult() {Code = Code.AccesstokenErrorMsg, Error = errorMsg};
                     var accessToken = token.Value<string>("access_token");
 
                     var uid = token.Value<string>("openid");
 
                     var user = UserInfo(accessToken, uid, ref errorMsg);
 
-                    return string.IsNullOrEmpty(errorMsg) ? new AuthorizeResult() { Code = 0, Result = user, Token = accessToken } : new AuthorizeResult() { Code = 3, Error = errorMsg, Token = accessToken };
+                    return string.IsNullOrEmpty(errorMsg) ? new AuthorizeResult() { Code = Code.Success, Result = user, Token = accessToken } : new AuthorizeResult() { Code =Code.UserInfoErrorMsg, Error = errorMsg, Token = accessToken };
 
                 }
             }
 
             catch (Exception ex)
             {
-                return new AuthorizeResult() { Code = 1, Error = ex.Message };
+                return new AuthorizeResult() { Code = Code.Exception, Error = ex.Message };
             }
 
             return null;
