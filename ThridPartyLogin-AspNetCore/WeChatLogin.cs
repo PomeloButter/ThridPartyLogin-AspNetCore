@@ -11,7 +11,7 @@ namespace ThridPartyLogin_AspNetCore
     public class WeChatLogin:LoginBase,ILogin
     {
         public static CredentialSetting WeChat { get; set; }
-        static readonly string AuthorizeUrl = "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.ClientId + "&redirect_uri={0}&response_type=code&scope=snsapi_userinfo#wechat_redirect";
+        private readonly string _authorizeUrl;
 
         static readonly string OauthUrl = "https://api.weixin.qq.com/sns/oauth2/access_token";
 
@@ -22,8 +22,8 @@ namespace ThridPartyLogin_AspNetCore
 
         public WeChatLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
         {
-            WeChat.ClientId = options.Value.ClientId;
-            WeChat.ClientSecret = options.Value.ClientSecret;
+            WeChat = options.Value;
+            _authorizeUrl= "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.ClientId + "&redirect_uri={0}&response_type=code&scope=snsapi_userinfo#wechat_redirect";
         }
         public AuthorizeResult Authorize()
         {
@@ -33,7 +33,7 @@ namespace ThridPartyLogin_AspNetCore
 
                 if (string.IsNullOrEmpty(code))
                 {
-                    HttpContext.Response.Redirect(string.Format(AuthorizeUrl, RedirectUri), true);
+                    HttpContext.Response.Redirect(string.Format(_authorizeUrl, RedirectUri), true);
 
                     return null;
                 }
@@ -69,11 +69,11 @@ namespace ThridPartyLogin_AspNetCore
 
             var Params = string.Join("&", data.Select(x => x.Key + "=" + x.Value).ToArray());
 
-            using (var wb = new HttpClient())
+            using (var client = new HttpClient())
             {
                 try
                 {
-                    var response = wb.PostAsync(OauthUrl, new StringContent(Params)).Result;
+                    var response = client.PostAsync(OauthUrl, new StringContent(Params)).Result;
 
                     var result = response.Content.ReadAsStringAsync().Result;
 

@@ -4,6 +4,7 @@ namespace ThridPartyLogin_AspNetCore
 {
     public class QqLogin:LoginBase,ILogin
     {
+       
         public QqLogin(IHttpContextAccessor contextAccessor) : base(contextAccessor)
         {
         }
