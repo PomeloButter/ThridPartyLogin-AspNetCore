@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using MvcSample.Models;
 using Newtonsoft.Json;
 using ThridPartyLogin_AspNetCore;
+using ThridPartyLogin_AspNetCore.IService;
 
 namespace MvcSample.Controllers
 {
