@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-namespace ThridPartyLogin_AspNetCore
+namespace ThridPartyLogin_AspNetCore.Common
 {
     public static class JsonCommon
     {

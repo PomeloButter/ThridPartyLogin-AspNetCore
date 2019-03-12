@@ -5,8 +5,10 @@ using System.Net.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
+using ThridPartyLogin_AspNetCore.Common;
+using ThridPartyLogin_AspNetCore.IService;
 
-namespace ThridPartyLogin_AspNetCore
+namespace ThridPartyLogin_AspNetCore.Service
 {
     public class WeChatLogin:LoginBase,ILogin
     {

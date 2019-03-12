@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
+using ThridPartyLogin_AspNetCore.Common;
+using ThridPartyLogin_AspNetCore.IService;
+using ThridPartyLogin_AspNetCore.Service;
 
 namespace ThridPartyLogin_AspNetCore
 {

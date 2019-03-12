@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 
-namespace ThridPartyLogin_AspNetCore
+namespace ThridPartyLogin_AspNetCore.Service
 {
     public class LoginBase
     {

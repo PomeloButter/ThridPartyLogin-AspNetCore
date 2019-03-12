@@ -1,4 +1,4 @@
-﻿namespace ThridPartyLogin_AspNetCore
+﻿namespace ThridPartyLogin_AspNetCore.Common
 {
     public class CredentialSetting
     {        /// <summary>

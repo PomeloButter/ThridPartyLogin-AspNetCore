@@ -16,9 +16,9 @@ namespace MvcSample.Controllers
     public class HomeController : Controller
     {
         private ILogin _login;
-        public HomeController(SingletonFactory singletonFactory)
+        public HomeController(ILogin login)
         {
-            this._login = singletonFactory.GetService<ILogin>("WeChat");
+            _login = login;
         }
 
         public IActionResult Index()

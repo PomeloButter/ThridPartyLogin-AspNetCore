@@ -1,7 +1,6 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 
-namespace ThridPartyLogin_AspNetCore
+namespace ThridPartyLogin_AspNetCore.Common
 {
     public class AuthorizeResult
     {
