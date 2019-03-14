@@ -4,7 +4,7 @@ using ThridPartyLogin_AspNetCore.IService;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
-    public class QqLogin:LoginBase,ILogin
+    public class QqLogin:LoginBase,IQqLogin
     {
        
         public QqLogin(IHttpContextAccessor contextAccessor) : base(contextAccessor)

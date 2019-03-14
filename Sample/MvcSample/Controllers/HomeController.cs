@@ -15,15 +15,18 @@ namespace MvcSample.Controllers
 {
     public class HomeController : Controller
     {
-        private ILogin _login;
-        public HomeController(ILogin login)
+        private IWeChatLogin _weChatLogin;
+        private IQqLogin _qqLogin;
+        public HomeController(IWeChatLogin weChatLogin, IQqLogin qqLogin)
         {
-            _login = login;
+            this._weChatLogin = weChatLogin;
+            this._qqLogin = qqLogin;
         }
 
         public IActionResult Index()
         {
-            var res= _login.Authorize();
+            var res= _weChatLogin.Authorize();
+            var ress = _qqLogin.Authorize();
             if (res != null && res.Code == 0)
             {
                 return RedirectToLogin(new

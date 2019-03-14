@@ -10,7 +10,7 @@ using ThridPartyLogin_AspNetCore.IService;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
-    public class WeChatLogin:LoginBase,ILogin
+    public class WeChatLogin:LoginBase,IWeChatLogin
     {
         public static CredentialSetting WeChat { get; set; }
         private readonly string _authorizeUrl;

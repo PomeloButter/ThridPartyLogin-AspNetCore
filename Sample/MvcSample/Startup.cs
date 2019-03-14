@@ -32,10 +32,16 @@ namespace MvcSample
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddWeChatLogin(p =>
             {
                 p.ClientSecret = "";
                 p.ClientId = "";
+            });
+            services.AddQqLogin(p =>
+            {
+                p.ClientId = "";
+                p.ClientSecret = "";
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }

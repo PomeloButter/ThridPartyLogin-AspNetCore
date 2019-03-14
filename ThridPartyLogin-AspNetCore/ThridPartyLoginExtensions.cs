@@ -19,18 +19,17 @@ namespace ThridPartyLogin_AspNetCore
                 throw new ArgumentNullException(nameof(services));
             }
 
-            services.BuildServiceProvider().GetService<IHttpContextAccessor>();
-            services.AddScoped<ILogin, WeChatLogin>();
+            services.AddScoped<IWeChatLogin, WeChatLogin>();
             return services;
         }
 
-        public static IServiceCollection AddQqLogin(this IServiceCollection services, IHttpContextAccessor httpContextAccessor, CredentialSetting action = null)
+        public static IServiceCollection AddQqLogin(this IServiceCollection services, Action<CredentialSetting> credential = null)
         {
             if (services==null)
             {
                 throw new ArgumentNullException(nameof(services));
             }
-
+            services.AddScoped<IQqLogin, QqLogin>();
             return services;
         }
 
