@@ -12,7 +12,7 @@ namespace ThridPartyLogin_AspNetCore.Service
 {
     public class WeChatLogin:LoginBase,IWeChatLogin
     {
-        public static CredentialSetting WeChat { get; set; }
+      
         private readonly string _authorizeUrl;
 
         static readonly string OauthUrl = "https://api.weixin.qq.com/sns/oauth2/access_token";
@@ -24,8 +24,8 @@ namespace ThridPartyLogin_AspNetCore.Service
 
         public WeChatLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
         {
-            WeChat = options.Value;
-            _authorizeUrl= "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + WeChat.ClientId + "&redirect_uri={0}&response_type=code&scope=snsapi_userinfo#wechat_redirect";
+            Credential = options.Value;
+            _authorizeUrl= "https://open.weixin.qq.com/connect/oauth2/authorize?appid=" + Credential.ClientId + "&redirect_uri={0}&response_type=code&scope=snsapi_userinfo#wechat_redirect";
         }
         public AuthorizeResult Authorize()
         {
@@ -65,9 +65,10 @@ namespace ThridPartyLogin_AspNetCore.Service
 
             return null;
         }
-        private JObject GetAccessToken(string code, ref string errMsg)
+
+        protected virtual JObject GetAccessToken(string code, ref string errMsg)
         {
-            var data = new SortedDictionary<string, string> {{"appid", WeChat.ClientId}, {"secret", WeChat.ClientSecret}, {"grant_type", "authorization_code"}, {"code", code}};
+            var data = new SortedDictionary<string, string> {{"appid", Credential.ClientId}, {"secret", Credential.ClientSecret}, {"grant_type", "authorization_code"}, {"code", code}};
 
             var Params = string.Join("&", data.Select(x => x.Key + "=" + x.Value).ToArray());
 

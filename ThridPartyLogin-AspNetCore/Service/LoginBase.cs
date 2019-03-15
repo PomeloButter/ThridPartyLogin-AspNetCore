@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Http;
+using ThridPartyLogin_AspNetCore.Common;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
     public class LoginBase
     {
         public readonly HttpContext HttpContext;
+        public static CredentialSetting Credential;
         private const string Code = "code";
         public LoginBase(IHttpContextAccessor contextAccessor)
         {

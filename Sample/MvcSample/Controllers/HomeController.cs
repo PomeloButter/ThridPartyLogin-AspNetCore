@@ -9,14 +9,15 @@ using Microsoft.AspNetCore.Mvc;
 using MvcSample.Models;
 using Newtonsoft.Json;
 using ThridPartyLogin_AspNetCore;
+using ThridPartyLogin_AspNetCore.Common;
 using ThridPartyLogin_AspNetCore.IService;
 
 namespace MvcSample.Controllers
 {
     public class HomeController : Controller
     {
-        private IWeChatLogin _weChatLogin;
-        private IQqLogin _qqLogin;
+        private readonly IWeChatLogin _weChatLogin;
+        private readonly IQqLogin _qqLogin;
         public HomeController(IWeChatLogin weChatLogin, IQqLogin qqLogin)
         {
             this._weChatLogin = weChatLogin;
@@ -26,33 +27,13 @@ namespace MvcSample.Controllers
         public IActionResult Index()
         {
             var res= _weChatLogin.Authorize();
-            var ress = _qqLogin.Authorize();
-            if (res != null && res.Code == 0)
+            if (res != null && res.Code == Code.Success)
             {
-                return RedirectToLogin(new
-                {
-                    channel = "wechat",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("uid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("headimgurl"),
-                        token = res.Token
-                    }
-                });
+                //成功的处理逻辑
             }
             return View();
         }
-        RedirectResult RedirectToLogin(object _entity)
-        {
-            var OAuthResult = JsonConvert.SerializeObject(_entity);
-
-            // 跳转的页面，union参数后面是编码后的用户数据
-            var url = "/login?union=" + WebUtility.UrlEncode(OAuthResult);
-
-            return Redirect(url);
-        }
+       
         public IActionResult Privacy()
         {
           
