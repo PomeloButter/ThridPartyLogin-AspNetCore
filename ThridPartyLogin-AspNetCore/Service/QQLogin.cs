@@ -66,12 +66,14 @@ namespace ThridPartyLogin_AspNetCore.Service
 
         protected virtual Dictionary<string, string> GetAccessToken(string code, ref string errMsg)
         {
-            var data = new SortedDictionary<string, string>();
-            data.Add("client_id", Credential.ClientId);
-            data.Add("client_secret", Credential.ClientSecret);
-            data.Add("grant_type", "authorization_code");
-            data.Add("code", code);
-            data.Add("redirect_uri", RedirectUri);
+            var data = new SortedDictionary<string, string>
+            {
+                {"client_id", Credential.ClientId},
+                {"client_secret", Credential.ClientSecret},
+                {"grant_type", "authorization_code"},
+                {"code", code},
+                {"redirect_uri", RedirectUri}
+            };
 
             var Params = string.Join("&", data.Select(x => x.Key + "=" + x.Value).ToArray());
 
@@ -85,16 +87,7 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                     var kvs = result.Split(new string[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
 
-                    var dic = new Dictionary<string, string>();
-
-                    foreach (var v in kvs)
-                    {
-                        var kv = v.Split(new string[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
-
-                        dic.Add(kv[0], kv[1]);
-                    }
-
-                    return dic;
+                    return kvs.Select(v => v.Split(new string[] {"="}, StringSplitOptions.RemoveEmptyEntries)).ToDictionary(kv => kv[0], kv => kv[1]);
                 }
                 catch (Exception ex)
                 {
@@ -109,7 +102,7 @@ namespace ThridPartyLogin_AspNetCore.Service
         {
             try
             {
-                var result = string.Empty;
+                string result;
 
                 using (var wc = new HttpClient())
                 {
@@ -144,5 +137,4 @@ namespace ThridPartyLogin_AspNetCore.Service
         }
     }
 
-}
 }

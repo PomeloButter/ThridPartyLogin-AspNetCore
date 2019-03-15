@@ -91,7 +91,8 @@ namespace ThridPartyLogin_AspNetCore.Service
                 }
             }
         }
-        private JObject UserInfo(string token, string uid, ref string errMsg)
+
+        protected virtual JObject UserInfo(string token, string uid, ref string errMsg)
         {
             try
             {
