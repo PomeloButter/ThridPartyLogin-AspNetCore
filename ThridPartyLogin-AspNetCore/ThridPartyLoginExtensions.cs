@@ -32,6 +32,14 @@ namespace ThridPartyLogin_AspNetCore
             services.AddScoped<IQqLogin, QqLogin>();
             return services;
         }
-
+        public static IServiceCollection AddSinaLogin(this IServiceCollection services, Action<CredentialSetting> credential = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            services.AddScoped<ISinaLogin, SinaLogin>();
+            return services;
+        }
     }
 }
