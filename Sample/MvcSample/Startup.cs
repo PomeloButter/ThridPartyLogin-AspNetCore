@@ -48,6 +48,11 @@ namespace MvcSample
                 p.ClientId = "";
                 p.ClientSecret = "";
             });
+            services.AddFackbookLogin(p =>
+            {
+                p.ClientId = "";
+                p.ClientSecret = "";
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

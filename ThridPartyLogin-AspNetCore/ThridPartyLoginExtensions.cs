@@ -41,5 +41,14 @@ namespace ThridPartyLogin_AspNetCore
             services.AddScoped<ISinaLogin, SinaLogin>();
             return services;
         }
+        public static IServiceCollection AddFackbookLogin(this IServiceCollection services, Action<CredentialSetting> credential = null)
+        {
+            if (services == null)
+            {
+                throw new ArgumentNullException(nameof(services));
+            }
+            services.AddScoped<IFacebookLogin, FacebookLogin>();
+            return services;
+        }
     }
 }

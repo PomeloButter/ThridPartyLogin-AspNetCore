@@ -10,19 +10,17 @@ using ThridPartyLogin_AspNetCore.IService;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
-    public class SinaLogin : LoginBase, ISinaLogin
+    public class FacebookLogin:LoginBase,IFacebookLogin
     {
-        private readonly string _authorizeUrl;
-        static string _oauthUrl = "https://api.weibo.com/oauth2/access_token?";
-        static string _userInfoUrl = "https://api.weibo.com/2/users/show.json?";
-        static  string _userInfoUrlParams = "uid={0}&access_token={1}";
-        public SinaLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
+        private static string _authorizeUrl;
+        static string _oauthUrl = "https://graph.facebook.com/v2.8/oauth/access_token";
+        static string _userInfoUrl = "https://graph.facebook.com/me";
+        static string _userInfoUrlParams = "fields=picture{url},name&access_token=";
+        public FacebookLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
         {
             Credential = options.Value;
-            _authorizeUrl = "https://api.weibo.com/oauth2/authorize?client_id=" + Credential.ClientId + "&response_type=code&redirect_uri=";
-           
+            _authorizeUrl = "https://www.facebook.com/v2.8/dialog/oauth?client_id=" + Credential.ClientId+ "&scope=email,public_profile&response_type=code&redirect_uri=";
         }
-
 
         public AuthorizeResult Authorize()
         {
@@ -39,51 +37,47 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                 if (!string.IsNullOrEmpty(code))
                 {
-                    var errorMsg = string.Empty;
+                    var errMsg = string.Empty;
 
-                    var token = GetAccessToken(code, ref errorMsg);
+                    var token = GetAccessToken(code, ref errMsg);
 
-                    if (!string.IsNullOrEmpty(errorMsg)) return new AuthorizeResult() {Code = Code.UserInfoErrorMsg, Error = errorMsg};
+                    if (!string.IsNullOrEmpty(errMsg)) return new AuthorizeResult() {Code = Code.UserInfoErrorMsg, Error = errMsg};
                     var accessToken = token.Value<string>("access_token");
 
-                    var uid = token.Value<string>("uid");
+                    var user = UserInfo(accessToken, ref errMsg);
 
-                    var user = UserInfo(accessToken, uid, ref errorMsg);
+                    return string.IsNullOrEmpty(errMsg) ? new AuthorizeResult() { Code = Code.Success, Result = user, Token = accessToken } : new AuthorizeResult() { Code =Code.AccesstokenErrorMsg, Error = errMsg, Token = accessToken };
 
-                    return string.IsNullOrEmpty(errorMsg) ? new AuthorizeResult() {Code = Code.Success, Result = user, Token = accessToken} : new AuthorizeResult() {Code = Code.AccesstokenErrorMsg, Error = errorMsg, Token = accessToken};
                 }
             }
 
             catch (Exception ex)
             {
-                return new AuthorizeResult() {Code = Code.Exception, Error = ex.Message};
+                return new AuthorizeResult() { Code = Code.Exception, Error = ex.Message };
             }
 
             return null;
         }
-
         private JObject GetAccessToken(string code, ref string errMsg)
         {
             var data = new SortedDictionary<string, string>();
             data.Add("client_id", Credential.ClientId);
             data.Add("client_secret", Credential.ClientSecret);
-            data.Add("grant_type", "authorization_code");
             data.Add("code", code);
             data.Add("redirect_uri", RedirectUri);
 
             var Params = string.Join("&", data.Select(x => x.Key + "=" + x.Value).ToArray());
 
-            using (var wb = new HttpClient())
+            using (var client = new HttpClient())
             {
                 try
                 {
-                    var accessTokenUrl = _oauthUrl + Params;
-
-                    var response = wb.PostAsync(accessTokenUrl, null).Result;
+                    var response = client.PostAsync(_oauthUrl, new StringContent(Params)).Result;
 
                     var result = response.Content.ReadAsStringAsync().Result;
 
                     return JsonCommon.Deserialize(result);
+
                 }
                 catch (Exception ex)
                 {
@@ -93,8 +87,7 @@ namespace ThridPartyLogin_AspNetCore.Service
                 }
             }
         }
-
-        private JObject UserInfo(string token, string uid, ref string errMsg)
+        private JObject UserInfo(string token, ref string errMsg)
         {
             try
             {
@@ -102,9 +95,9 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                 using (var wc = new HttpClient())
                 {
-                    var url = _userInfoUrl + string.Format(_userInfoUrlParams, uid, token);
+                    var content = _userInfoUrlParams + token;
 
-                    var response = wc.GetAsync(url).Result;
+                    var response = wc.PostAsync(_userInfoUrl, new StringContent(content)).Result;
 
                     result = response.Content.ReadAsStringAsync().Result;
                 }
@@ -112,6 +105,7 @@ namespace ThridPartyLogin_AspNetCore.Service
                 var user = JsonCommon.Deserialize(result);
 
                 return user;
+
             }
             catch (Exception ex)
             {

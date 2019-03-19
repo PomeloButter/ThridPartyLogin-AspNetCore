@@ -19,12 +19,14 @@ namespace MvcSample.Controllers
         private readonly IWeChatLogin _weChatLogin;
         private readonly IQqLogin _qqLogin;
         private readonly ISinaLogin _sinaLogin;
+        private readonly IFacebookLogin _facebookLogin;
 
-        public HomeController(IWeChatLogin weChatLogin, IQqLogin qqLogin,ISinaLogin sinaLogin)
+        public HomeController(IWeChatLogin weChatLogin, IQqLogin qqLogin,ISinaLogin sinaLogin,IFacebookLogin facebookLogin)
         {
             this._weChatLogin = weChatLogin;
             this._qqLogin = qqLogin;
             this._sinaLogin = sinaLogin;
+            this._facebookLogin = facebookLogin;
         }
 
         public IActionResult Index()
