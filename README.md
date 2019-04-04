@@ -155,6 +155,5 @@ public class OAuthController : Controller
 
 4，Views/OAuth/Webo.cshtml
 
-5，Views/OAuth/Facebook.cshtml
 ```
 源码中SampleMVC里有示例
