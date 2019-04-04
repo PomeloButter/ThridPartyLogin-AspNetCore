@@ -9,6 +9,7 @@ namespace ThridPartyLogin_AspNetCore.Common
         {
             return JsonConvert.DeserializeObject<JObject>(objStr);
         }
+
         public static string Serialize(object obj)
         {
             return JsonConvert.SerializeObject(obj);

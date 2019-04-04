@@ -1,14 +1,15 @@
-﻿namespace ThridPartyLogin_AspNetCore.Common
+﻿namespace ThridPartyLogin_AspNetCore.Entity
 {
     public class CredentialSetting
-    {        /// <summary>
-        /// AppKey
+    {
+        /// <summary>
+        ///     AppKey
         /// </summary>
         public string ClientId { get; set; }
+
         /// <summary>
-        /// AppSecret
+        ///     AppSecret
         /// </summary>
         public string ClientSecret { get; set; }
-
     }
 }

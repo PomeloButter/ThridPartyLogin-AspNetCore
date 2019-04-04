@@ -6,20 +6,24 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using ThridPartyLogin_AspNetCore.Common;
+using ThridPartyLogin_AspNetCore.Entity;
 using ThridPartyLogin_AspNetCore.IService;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
-    public class FacebookLogin:LoginBase,IFacebookLogin
+    public class FacebookLogin : LoginBase, IFacebookLogin
     {
         private static string _authorizeUrl;
-        static string _oauthUrl = "https://graph.facebook.com/v2.8/oauth/access_token";
-        static string _userInfoUrl = "https://graph.facebook.com/me";
-        static string _userInfoUrlParams = "fields=picture{url},name&access_token=";
-        public FacebookLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
+        private static readonly string _oauthUrl = "https://graph.facebook.com/v2.8/oauth/access_token";
+        private static readonly string _userInfoUrl = "https://graph.facebook.com/me";
+        private static readonly string _userInfoUrlParams = "fields=picture{url},name&access_token=";
+
+        public FacebookLogin(IHttpContextAccessor contextAccessor, IOptions<FaceBookCredential> options) : base(
+            contextAccessor)
         {
             Credential = options.Value;
-            _authorizeUrl = "https://www.facebook.com/v2.8/dialog/oauth?client_id=" + Credential.ClientId+ "&scope=email,public_profile&response_type=code&redirect_uri=";
+            _authorizeUrl = "https://www.facebook.com/v2.8/dialog/oauth?client_id=" + Credential.ClientId +
+                            "&scope=email,public_profile&response_type=code&redirect_uri=";
         }
 
         public AuthorizeResult Authorize()
@@ -41,23 +45,26 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                     var token = GetAccessToken(code, ref errMsg);
 
-                    if (!string.IsNullOrEmpty(errMsg)) return new AuthorizeResult() {Code = Code.UserInfoErrorMsg, Error = errMsg};
+                    if (!string.IsNullOrEmpty(errMsg))
+                        return new AuthorizeResult {Code = Code.UserInfoErrorMsg, Error = errMsg};
                     var accessToken = token.Value<string>("access_token");
 
                     var user = UserInfo(accessToken, ref errMsg);
 
-                    return string.IsNullOrEmpty(errMsg) ? new AuthorizeResult() { Code = Code.Success, Result = user, Token = accessToken } : new AuthorizeResult() { Code =Code.AccesstokenErrorMsg, Error = errMsg, Token = accessToken };
-
+                    return string.IsNullOrEmpty(errMsg)
+                        ? new AuthorizeResult {Code = Code.Success, Result = user, Token = accessToken}
+                        : new AuthorizeResult {Code = Code.AccessTokenErrorMsg, Error = errMsg, Token = accessToken};
                 }
             }
 
             catch (Exception ex)
             {
-                return new AuthorizeResult() { Code = Code.Exception, Error = ex.Message };
+                return new AuthorizeResult {Code = Code.Exception, Error = ex.Message};
             }
 
             return null;
         }
+
         private JObject GetAccessToken(string code, ref string errMsg)
         {
             var data = new SortedDictionary<string, string>();
@@ -77,7 +84,6 @@ namespace ThridPartyLogin_AspNetCore.Service
                     var result = response.Content.ReadAsStringAsync().Result;
 
                     return JsonCommon.Deserialize(result);
-
                 }
                 catch (Exception ex)
                 {
@@ -87,6 +93,7 @@ namespace ThridPartyLogin_AspNetCore.Service
                 }
             }
         }
+
         private JObject UserInfo(string token, ref string errMsg)
         {
             try
@@ -105,7 +112,6 @@ namespace ThridPartyLogin_AspNetCore.Service
                 var user = JsonCommon.Deserialize(result);
 
                 return user;
-
             }
             catch (Exception ex)
             {

@@ -6,26 +6,30 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json.Linq;
 using ThridPartyLogin_AspNetCore.Common;
+using ThridPartyLogin_AspNetCore.Entity;
 using ThridPartyLogin_AspNetCore.IService;
 
 namespace ThridPartyLogin_AspNetCore.Service
 {
-    public class QqLogin : LoginBase, IQqLogin
+    public sealed class QqLogin : LoginBase, IQqLogin
     {
+        private const string OauthUrl = "https://graph.qq.com/oauth2.0/token";
+
+        private const string OpenidUrl = "https://graph.qq.com/oauth2.0/me";
+
+        private const string UserInfoUrl = "https://graph.qq.com/user/get_user_info";
         private readonly string _authorizeUrl;
         private readonly string _userInfoUrlParams;
-        static readonly string _oauthUrl = "https://graph.qq.com/oauth2.0/token";
-
-        static readonly string _openidUrl = "https://graph.qq.com/oauth2.0/me";
-
-        static readonly string _userInfoUrl = "https://graph.qq.com/user/get_user_info";
 
 
-        public QqLogin(IHttpContextAccessor contextAccessor, IOptions<CredentialSetting> options) : base(contextAccessor)
+        public QqLogin(IHttpContextAccessor contextAccessor, IOptions<QQCredential> options) : base(
+            contextAccessor)
         {
             Credential = options.Value;
-            _authorizeUrl = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=" + Credential.ClientId + "&redirect_uri=";
-            _userInfoUrlParams = "format=json&oauth_consumer_key=" + Credential.ClientId + "&openid={0}&access_token={1}";
+            _authorizeUrl = "https://graph.qq.com/oauth2.0/authorize?response_type=code&client_id=" +
+                            Credential.ClientId + "&redirect_uri=";
+            _userInfoUrlParams =
+                "format=json&oauth_consumer_key=" + Credential.ClientId + "&openid={0}&access_token={1}";
         }
 
         public AuthorizeResult Authorize()
@@ -47,24 +51,27 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                     var token = GetAccessToken(code, ref errorMsg);
 
-                    if (!string.IsNullOrEmpty(errorMsg)) return new AuthorizeResult() {Code = Code.UserInfoErrorMsg, Error = errorMsg};
+                    if (!string.IsNullOrEmpty(errorMsg))
+                        return new AuthorizeResult {Code = Code.UserInfoErrorMsg, Error = errorMsg};
                     var accessToken = token["access_token"];
 
                     var user = UserInfo(accessToken, ref errorMsg);
 
-                    return string.IsNullOrEmpty(errorMsg) ? new AuthorizeResult() { Code =Code.Success, Result = user, Token = accessToken } : new AuthorizeResult() { Code = Code.AccesstokenErrorMsg, Error = errorMsg, Token = accessToken };
+                    return string.IsNullOrEmpty(errorMsg)
+                        ? new AuthorizeResult {Code = Code.Success, Result = user, Token = accessToken}
+                        : new AuthorizeResult {Code = Code.AccessTokenErrorMsg, Error = errorMsg, Token = accessToken};
                 }
             }
 
             catch (Exception ex)
             {
-                return new AuthorizeResult() { Code =Code.Exception, Error = ex.Message };
+                return new AuthorizeResult {Code = Code.Exception, Error = ex.Message};
             }
 
             return null;
         }
 
-        protected virtual Dictionary<string, string> GetAccessToken(string code, ref string errMsg)
+        private Dictionary<string, string> GetAccessToken(string code, ref string errMsg)
         {
             var data = new SortedDictionary<string, string>
             {
@@ -81,13 +88,14 @@ namespace ThridPartyLogin_AspNetCore.Service
             {
                 try
                 {
-                    var response = wb.PostAsync(_oauthUrl, new StringContent(Params)).Result;
+                    var response = wb.PostAsync(OauthUrl, new StringContent(Params)).Result;
 
                     var result = response.Content.ReadAsStringAsync().Result;
 
-                    var kvs = result.Split(new string[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
+                    var kvs = result.Split(new[] {"&"}, StringSplitOptions.RemoveEmptyEntries);
 
-                    return kvs.Select(v => v.Split(new string[] {"="}, StringSplitOptions.RemoveEmptyEntries)).ToDictionary(kv => kv[0], kv => kv[1]);
+                    return kvs.Select(v => v.Split(new[] {"="}, StringSplitOptions.RemoveEmptyEntries))
+                        .ToDictionary(kv => kv[0], kv => kv[1]);
                 }
                 catch (Exception ex)
                 {
@@ -106,7 +114,7 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                 using (var wc = new HttpClient())
                 {
-                    var response = wc.PostAsync(_openidUrl, new StringContent("access_token=" + token)).Result;
+                    var response = wc.PostAsync(OpenidUrl, new StringContent("access_token=" + token)).Result;
                     result = response.Content.ReadAsStringAsync().Result;
                 }
 
@@ -116,17 +124,17 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                 using (var wc = new HttpClient())
                 {
-                    var response = wc.PostAsync(_userInfoUrl, new StringContent(string.Format(_userInfoUrlParams, openid, token))).Result;
+                    var response = wc.PostAsync(UserInfoUrl,
+                        new StringContent(string.Format(_userInfoUrlParams, openid, token))).Result;
 
                     result = response.Content.ReadAsStringAsync().Result;
                 }
 
-                var user =JsonCommon.Deserialize(result);
+                var user = JsonCommon.Deserialize(result);
 
                 user.Add("openid", openid);
 
                 return user;
-
             }
             catch (Exception ex)
             {
@@ -136,5 +144,4 @@ namespace ThridPartyLogin_AspNetCore.Service
             }
         }
     }
-
 }

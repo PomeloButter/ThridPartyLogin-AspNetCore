@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Options;
 using ThridPartyLogin_AspNetCore;
 
 namespace MvcSample
@@ -35,8 +29,8 @@ namespace MvcSample
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddWeChatLogin(p =>
             {
-                p.ClientSecret = "";
-                p.ClientId = "";
+                p.ClientId = "wx5c4be166b4e6b02c";
+                p.ClientSecret = "d3d28eea391f57fa1e8acbab321df982";
             });
             services.AddQqLogin(p =>
             {
@@ -45,8 +39,8 @@ namespace MvcSample
             });
             services.AddSinaLogin(p =>
             {
-                p.ClientId = "";
-                p.ClientSecret = "";
+                p.ClientId = "1566538736";
+                p.ClientSecret = "77ddc16ff9325055358721ad1157ac04";
             });
             services.AddFackbookLogin(p =>
             {
@@ -60,25 +54,19 @@ namespace MvcSample
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())
-            {
                 app.UseDeveloperExceptionPage();
-            }
             else
-            {
                 app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
-            }
 
-            app.UseHttpsRedirection();
+
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    "default",
+                    "{controller=Home}/{action=Privacy}/{id?}");
             });
         }
     }

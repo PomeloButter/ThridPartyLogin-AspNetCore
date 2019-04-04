@@ -1,7 +1,6 @@
 ﻿namespace ThridPartyLogin_AspNetCore.IService
 {
-    public interface IWeChatLogin:ILogin
+    public interface IWeChatLogin : ILogin
     {
-        
     }
 }

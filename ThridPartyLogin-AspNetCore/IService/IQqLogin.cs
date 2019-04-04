@@ -1,7 +1,6 @@
 ﻿namespace ThridPartyLogin_AspNetCore.IService
 {
-    public interface IQqLogin:ILogin
+    public interface IQqLogin : ILogin
     {
-        
     }
 }

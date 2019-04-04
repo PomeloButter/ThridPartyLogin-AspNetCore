@@ -11,7 +11,6 @@ namespace ThridPartyLogin_AspNetCore.Common
         public JObject Result { get; set; }
 
         public string Token { get; set; }
-     
     }
 
     public enum Code
@@ -19,6 +18,6 @@ namespace ThridPartyLogin_AspNetCore.Common
         Success,
         Exception,
         UserInfoErrorMsg,
-        AccesstokenErrorMsg
+        AccessTokenErrorMsg
     }
 }
