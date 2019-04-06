@@ -31,6 +31,11 @@ Usage
                 p.ClientId = "";
                 p.ClientSecret = "";
             });
+             services.AddGitHubLogin(p =>
+            {
+                p.ClientId = "";
+                p.ClientSecret = "";
+            });
 ```
 
 
@@ -52,24 +57,12 @@ public class OAuthController : Controller
             _facebookLogin = facebookLogin;
         }
 
-        public IActionResult QQ()
+         public IActionResult QQ()
         {
-
             var res = _qqLogin.Authorize();
-            if (res != null && res.Code == 0)
+            if (res != null && res?.Code == Code.Success)
             {
-                return RedirectToLogin(new
-                {
-                    channel = "qq",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("openid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("figureurl"),
-                        token = res.Token
-                    }
-                });
+                //成功逻辑
             }
 
             return View();
@@ -78,21 +71,9 @@ public class OAuthController : Controller
         public IActionResult Facebook()
         {
             var res = _facebookLogin.Authorize();
-            if (res != null && res.Code == 0)
+            if (res != null && res?.Code == Code.Success)
             {
-                return RedirectToLogin(new
-                {
-                    channel = "facebook",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("id"),
-                        name = res.Result.Value<string>("name"),
-                        img = res.Result["picture"]["data"].Value<string>("url"),
-                        token = res.Token
-                    }
-                });
-               
+                //成功逻辑
             }
             return View();
         }
@@ -100,52 +81,37 @@ public class OAuthController : Controller
         public IActionResult WeChat()
         {
             var res = _weChatLogin.Authorize();
-            if (res != null && res.Code == Code.Success)
-                return RedirectToLogin(new
-                {
-                    channel = "wechat",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("uid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("headimgurl"),
-                        token = res.Token
-                    }
-                });
+            if (res != null && res?.Code == Code.Success)
+            {
+                //成功逻辑
+            }
             return View();
         }
+
         public IActionResult WeiBo()
         {
             var res = _sinaLogin.Authorize();
-            if (res != null && res.Code == Code.Success)
-                return RedirectToLogin(new
-                {
-                    channel = "wechat",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("uid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("headimgurl"),
-                        token = res.Token
-                    }
-                });
+            if (res != null && res?.Code == Code.Success)
+            {
+                //成功逻辑
+            }
             return View();
         }
-        private RedirectResult RedirectToLogin(object entity)
+
+        public IActionResult GitHub()
         {
-            var oAuthResult = JsonConvert.SerializeObject(entity);
-
-            // 跳转的页面，union参数后面是编码后的用户数据
-            var url = "/login?union=" + WebUtility.UrlEncode(oAuthResult);
-
-            return Redirect(url);
+            var res = _gitHubLogin.Authorize();
+            if (res!=null&&res?.Code==Code.Success)
+            {
+                //成功逻辑
+              
+            }           
+            return View();
         }
     }
 ```
 
-第三步：添加5个空页面,页面里不要有代码
+第三步：添加5个空页面,页面里不要有代码,防止方法异常时抛出
 ```
 1，Views/OAuth/QQ.cshtml
 
@@ -155,5 +121,8 @@ public class OAuthController : Controller
 
 4，Views/OAuth/Webo.cshtml
 
+5，Views/OAuth/GitHub.cshtml
 ```
-源码中SampleMVC里有示例
+<p>回调地址的填写:<p>
+例如GitHub:我们是在OAuth/Github方法中调用，那么填写回调地址就是：http://www.xxx.com/OAuth/Github
+ 
