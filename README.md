@@ -43,18 +43,19 @@ Usage
 ```csharp
 public class OAuthController : Controller
     {
-        private readonly IFacebookLogin _facebookLogin;
+         private readonly IFacebookLogin _facebookLogin;
         private readonly IQqLogin _qqLogin;
         private readonly ISinaLogin _sinaLogin;
         private readonly IWeChatLogin _weChatLogin;
-
+        private readonly IGitHubLogin _gitHubLogin;
         public OAuthController(IWeChatLogin weChatLogin, IQqLogin qqLogin, ISinaLogin sinaLogin,
-            IFacebookLogin facebookLogin)
+            IFacebookLogin facebookLogin, IGitHubLogin gitHubLogin)
         {
             _weChatLogin = weChatLogin;
             _qqLogin = qqLogin;
             _sinaLogin = sinaLogin;
             _facebookLogin = facebookLogin;
+            _gitHubLogin = gitHubLogin;
         }
 
          public IActionResult QQ()
