@@ -39,7 +39,7 @@ Usage
 ```
 
 
-第二步：添加Controllers/OAuthController.cs
+第二步：添加Controllers/OAuthController.cs(controller名字根据你自己的业务场景取名，看你心情取名 哈哈哈)
 ```csharp
 public class OAuthController : Controller
     {
