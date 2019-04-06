@@ -47,6 +47,11 @@ namespace MvcSample
                 p.ClientId = "";
                 p.ClientSecret = "";
             });
+            services.AddGitHubLogin(p =>
+            {
+                p.ClientId = "bacdceeeb0e8dd1b1550";
+                p.ClientSecret = "af424d3b23ae0907dbdda2f60bf7fd9a1d9ff452";
+            });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
@@ -55,10 +60,7 @@ namespace MvcSample
         {
             if (env.IsDevelopment())
                 app.UseDeveloperExceptionPage();
-            else
-                app.UseExceptionHandler("/Home/Error");
-
-
+           
             app.UseStaticFiles();
             app.UseCookiePolicy();
 

@@ -43,5 +43,14 @@ namespace ThridPartyLogin_AspNetCore
             services.AddScoped<IFacebookLogin, FacebookLogin>();
             return services;
         }
+
+        public static IServiceCollection AddGitHubLogin(this IServiceCollection services,
+            Action<GitHubCredential> credential = null)
+        {
+            if (services == null) throw new ArgumentNullException(nameof(services));
+            services.Configure(credential);
+            services.AddScoped<IGitHubLogin, GitHubLogin>();
+            return services;
+        }
     }
 }

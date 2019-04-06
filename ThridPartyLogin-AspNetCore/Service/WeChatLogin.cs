@@ -49,27 +49,22 @@ namespace ThridPartyLogin_AspNetCore.Service
 
                     var token = GetAccessToken(code, ref errorMsg);
 
-                    if (string.IsNullOrEmpty(errorMsg))
-                    {
-                        var access_token = token.Value<string>("access_token");
+                    if (!string.IsNullOrEmpty(errorMsg)) return new AuthorizeResult {Code = Code.UserInfoErrorMsg, Error = errorMsg};
+                    var accessToken = token.Value<string>("access_token");
 
-                        var uid = token.Value<string>("openid");
+                    var uid = token.Value<string>("openid");
 
-                        var user = UserInfo(access_token, uid, ref errorMsg);
+                    var user = UserInfo(accessToken, uid, ref errorMsg);
 
-                        if (string.IsNullOrEmpty(errorMsg))
-                            return new AuthorizeResult {Code = 0, Result = user, Token = access_token};
-
-                        return new AuthorizeResult {Code = (Code) 3, Error = errorMsg, Token = access_token};
-                    }
-
-                    return new AuthorizeResult {Code = (Code) 2, Error = errorMsg};
+                    return string.IsNullOrEmpty(errorMsg)
+                        ? new AuthorizeResult {Code = Code.Success, Result = user, Token = accessToken}
+                        : new AuthorizeResult {Code = Code.AccessTokenErrorMsg, Error = errorMsg, Token = accessToken};
                 }
             }
 
             catch (Exception ex)
             {
-                return new AuthorizeResult {Code = (Code) 1, Error = ex.Message};
+                return new AuthorizeResult {Code = Code.Exception, Error = ex.Message};
             }
 
             return null;

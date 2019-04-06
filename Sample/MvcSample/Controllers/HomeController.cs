@@ -14,34 +14,23 @@ namespace MvcSample.Controllers
         private readonly IQqLogin _qqLogin;
         private readonly ISinaLogin _sinaLogin;
         private readonly IWeChatLogin _weChatLogin;
-
+        private readonly IGitHubLogin _gitHubLogin;
         public HomeController(IWeChatLogin weChatLogin, IQqLogin qqLogin, ISinaLogin sinaLogin,
-            IFacebookLogin facebookLogin)
+            IFacebookLogin facebookLogin, IGitHubLogin gitHubLogin)
         {
             _weChatLogin = weChatLogin;
             _qqLogin = qqLogin;
             _sinaLogin = sinaLogin;
             _facebookLogin = facebookLogin;
+            _gitHubLogin = gitHubLogin;
         }
 
         public IActionResult QQ()
         {
-
             var res = _qqLogin.Authorize();
-            if (res != null && res.Code == 0)
+            if (res != null && res?.Code == Code.Success)
             {
-                return RedirectToLogin(new
-                {
-                    channel = "qq",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("openid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("figureurl"),
-                        token = res.Token
-                    }
-                });
+                //成功逻辑
             }
 
             return View();
@@ -50,21 +39,9 @@ namespace MvcSample.Controllers
         public IActionResult Facebook()
         {
             var res = _facebookLogin.Authorize();
-            if (res != null && res.Code == 0)
+            if (res != null && res?.Code == Code.Success)
             {
-                return RedirectToLogin(new
-                {
-                    channel = "facebook",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("id"),
-                        name = res.Result.Value<string>("name"),
-                        img = res.Result["picture"]["data"].Value<string>("url"),
-                        token = res.Token
-                    }
-                });
-               
+                //成功逻辑
             }
             return View();
         }
@@ -72,48 +49,35 @@ namespace MvcSample.Controllers
         public IActionResult WeChat()
         {
             var res = _weChatLogin.Authorize();
-            if (res != null && res.Code == Code.Success)
-                return RedirectToLogin(new
-                {
-                    channel = "wechat",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("uid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("headimgurl"),
-                        token = res.Token
-                    }
-                });
+            if (res != null && res?.Code == Code.Success)
+            {
+                //成功逻辑
+            }
             return View();
         }
+
         public IActionResult WeiBo()
         {
             var res = _sinaLogin.Authorize();
-            if (res != null && res.Code == Code.Success)
-                return RedirectToLogin(new
-                {
-                    channel = "wechat",
-                    code = 0,
-                    user = new
-                    {
-                        uid = res.Result.Value<string>("uid"),
-                        name = res.Result.Value<string>("nickname"),
-                        img = res.Result.Value<string>("headimgurl"),
-                        token = res.Token
-                    }
-                });
+            if (res != null && res?.Code == Code.Success)
+            {
+                //成功逻辑
+            }
             return View();
         }
-        private RedirectResult RedirectToLogin(object entity)
+
+        public IActionResult GitHub()
         {
-            var oAuthResult = JsonConvert.SerializeObject(entity);
-
-            // 跳转的页面，union参数后面是编码后的用户数据
-            var url = "/login?union=" + WebUtility.UrlEncode(oAuthResult);
-
-            return Redirect(url);
+            var res = _gitHubLogin.Authorize();
+            if (res!=null&&res?.Code==Code.Success)
+            {
+                //成功逻辑
+                return Content(res.Result.ToString());
+            }           
+            return View();
         }
+
+      
 
         public IActionResult Privacy()
         {
