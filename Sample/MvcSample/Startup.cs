@@ -29,8 +29,8 @@ namespace MvcSample
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddWeChatLogin(p =>
             {
-                p.ClientId = "wx5c4be166b4e6b02c";
-                p.ClientSecret = "d3d28eea391f57fa1e8acbab321df982";
+                p.ClientId = "";
+                p.ClientSecret = "";
             });
             services.AddQqLogin(p =>
             {
@@ -39,8 +39,8 @@ namespace MvcSample
             });
             services.AddSinaLogin(p =>
             {
-                p.ClientId = "1566538736";
-                p.ClientSecret = "77ddc16ff9325055358721ad1157ac04";
+                p.ClientId = "";
+                p.ClientSecret = "";
             });
             services.AddFackbookLogin(p =>
             {
@@ -49,8 +49,8 @@ namespace MvcSample
             });
             services.AddGitHubLogin(p =>
             {
-                p.ClientId = "bacdceeeb0e8dd1b1550";
-                p.ClientSecret = "af424d3b23ae0907dbdda2f60bf7fd9a1d9ff452";
+                p.ClientId = "";
+                p.ClientSecret = "";
             });
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
