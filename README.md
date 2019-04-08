@@ -1,6 +1,12 @@
 # ThridPartyLogin-AspNetCore
 [![Build Status](https://dev.azure.com/PomeloButter/ThridPartyLogin-AspNetCore/_apis/build/status/ThridPartyLogin-AspNetCore-ASP.NET%20Core-CI?branchName=master&jobName=Agent%20job%201)](https://dev.azure.com/PomeloButter/ThridPartyLogin-AspNetCore/_build/latest?definitionId=17&branchName=master)
 
+
+NuGet downloads (ThridPartyLogin-AspNetCore)
+
+[![NuGet downloads ThridPartyLogin-AspNetCore](https://img.shields.io/nuget/dt/ThridPartyLogin-AspNetCore.svg)](https://www.nuget.org/packages/OAuthLogin.AspNetCore)
+
+
 新手练习项目，算是入门.NetCore的小菜鸟，重在学习技术，非常感谢@Seven大佬，学习到了不少知识
 
 Usage
