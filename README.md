@@ -4,7 +4,7 @@
 
 NuGet downloads (ThridPartyLogin-AspNetCore)
 
-[![NuGet downloads ThridPartyLogin-AspNetCore](https://img.shields.io/nuget/dt/ThridPartyLogin-AspNetCore.svg)](https://www.nuget.org/packages/OAuthLogin.AspNetCore)
+[![NuGet downloads ThridPartyLogin-AspNetCore](https://img.shields.io/nuget/dt/ThridPartyLogin-AspNetCore.svg)](https://www.nuget.org/packages/ThridPartyLogin-AspNetCore)
 
 
 新手练习项目，算是入门.NetCore的小菜鸟，重在学习技术，非常感谢@Seven大佬，学习到了不少知识
