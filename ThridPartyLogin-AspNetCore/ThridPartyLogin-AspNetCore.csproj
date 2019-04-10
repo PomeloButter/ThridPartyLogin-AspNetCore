@@ -4,7 +4,11 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>ThridPartyLogin_AspNetCore</RootNamespace>
   </PropertyGroup>
-
+  <PropertyGroup>
+    <packageVersion>1.0.0</packageVersion>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageProjectUrl>https://github.com/PomeloButter/ThridPartyLogin-AspNetCore</PackageProjectUrl>
+  </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.2.0" />
